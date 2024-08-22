@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Calc</title>
+	<meta name="description" content="Simple calculator, made with JavaScript, that you can freely type into.">
+	<style>
+		:root { font-size: 16px; }
+		@media (min-width: 320px) and (max-width: 1200px) {
+			:root { font-size: calc(16px + (28 - 16) * ((100vw - 320px) / (1200 - 320))); }
+		}
+		@media (min-width: 1200px) { :root { font-size: 28px; } }
+		html { font-family: sans-serif; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+		body {
+			line-height: 1.75;
+			font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+			text-rendering: optimizeLegibility;
+			-webkit-font-smoothing: antialiased;
+			-moz-osx-font-smoothing: grayscale;
+			margin: 0.8em;
+			text-align: center;
+		}
+
+		button, input { font-family: inherit; font-size: inherit; }
+
+		*, *::before, *::after { box-sizing: border-box; }
+
+		#display { height: 2em; }
+		#display .a { position: relative; }
+		#display .b { opacity: 0.25; position: absolute; }
+
+		body { color: #eee; background: #111; }
+		input, textarea, button, button:disabled { color: #ccc; background: #333; }
+	</style>
+</head>
+<body>
+	<div id="display"></div>
+	<div>
+		<input type="text" id="calc" value="2/3">
+	</div>
+
+	<script>
+		"keyup".split(" ").forEach(function(evt) {
+			calc.addEventListener(evt, function(e) {
+				calculate();
+			});
+		});
+		calculate();
+		function calculate() {
+			if (!calc.value.match(/^[\d\(\)\.\-\+\*\/\^]+$/)) {
+				display.innerHTML = '';
+				return;
+			}
+			var val = calc.value;
+			val = val.replace(/\^/, '**');
+
+			try {
+				var answer = eval(val);
+				var parts = (answer+"").split('.');
+				var answA = ''; var answB = '';
+				if (parts.length > 1) {
+					var dec = (parts[1]+"").length;
+					if (dec > 2) {
+						answA = parts[0]+"."+parts[1].substr(0, 2);
+						answB = parts[1].substr(2);
+					}
+					else {
+						answA = parts[0]+"."+parts[1];
+					}
+				}
+				else {
+					answA = answer;
+				}
+				display.innerHTML = `<span class="a">${answA}<span class="b">${answB}</span></span>`;
+			} catch(err) { }
+		}
+	</script>
+</body>
+</html>
